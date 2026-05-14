@@ -23,7 +23,6 @@ def scale_data(X_train, X_test):
     X_test_scaled = scaler.transform(X_test)
     return X_train_scaled, X_test_scaled
 
-
 def train_model(X_train_scaled, y_train):
     mlp = MLPRegressor(random_state=RANDOM_STATE, hidden_layer_sizes=(10,5), max_iter=200, batch_size=1000,
                        activation="relu", validation_fraction=0.2, early_stopping=True)
@@ -59,6 +58,8 @@ def main():
     print("Best validation score:", round(mlp.best_validation_score_, 3))
 
     y_pred_train = mlp.predict(X_train_scaled)
+    y_pred_test = mlp.predict(X_test_scaled)
     save_actual_vs_predicted_plot(y_train, y_pred_train, "Predicted vs Actual - Train", "figures/train_actual_vs_pred.png")
+    save_actual_vs_predicted_plot(y_test, y_pred_test, "Predicted vs Actual - Test", "figures/test_actual_vs_pred.png")
 
 main()
