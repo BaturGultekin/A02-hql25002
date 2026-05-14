@@ -24,7 +24,7 @@ def scale_data(X_train, X_test):
     return X_train_scaled, X_test_scaled
 
 def train_model(X_train_scaled, y_train):
-    mlp = MLPRegressor(random_state=RANDOM_STATE, hidden_layer_sizes=(10,5), max_iter=200, batch_size=1000,
+    mlp = MLPRegressor(random_state=RANDOM_STATE, hidden_layer_sizes=(16,8), max_iter=200, batch_size=128,
                        activation="relu", validation_fraction=0.2, early_stopping=True)
 
     mlp.fit(X_train_scaled, y_train)
@@ -36,12 +36,14 @@ def save_actual_vs_predicted_plot(y_true,y_pred, title, output_path):
     lo = min(np.min(y_true), np.min(y_pred))
     hi = max(np.max(y_true), np.max(y_pred))
 
-    plt.plot([lo, hi], [lo, hi], linewidth=1)
+    plt.plot([lo, hi], [lo, hi], linewidth=1, color="red")
     plt.xlabel("Actual MedHouseVal")
     plt.ylabel("Predicted MedHouseVal")
     plt.title(title)
+    plt.grid(True)
     plt.tight_layout()
     plt.savefig(output_path)
+    plt.savefig(output_path, dpi=300)
     plt.close()
 
 def main():
@@ -59,7 +61,7 @@ def main():
 
     y_pred_train = mlp.predict(X_train_scaled)
     y_pred_test = mlp.predict(X_test_scaled)
-    save_actual_vs_predicted_plot(y_train, y_pred_train, "Predicted vs Actual - Train", "figures/train_actual_vs_pred.png")
-    save_actual_vs_predicted_plot(y_test, y_pred_test, "Predicted vs Actual - Test", "figures/test_actual_vs_pred.png")
+    save_actual_vs_predicted_plot(y_train, y_pred_train, "Actual vs Predicted MedHouseVal - Train", "figures/train_actual_vs_pred.png")
+    save_actual_vs_predicted_plot(y_test, y_pred_test, "Actual vs Predicted MedHouseVal - Test", "figures/test_actual_vs_pred.png")
 
 main()
