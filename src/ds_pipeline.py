@@ -1,10 +1,11 @@
-
+import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPRegressor
 from sklearn.preprocessing import StandardScaler
 import warnings
-warnings.filterwarnings("ignore") 
+warnings.filterwarnings("ignore")
 RANDOM_STATE = 1
 
 def load_data():
@@ -30,6 +31,20 @@ def train_model(X_train_scaled, y_train):
     mlp.fit(X_train_scaled, y_train)
     return mlp
 
+def save_actual_vs_predicted_plot(y_true,y_pred, title, output_path):
+    plt.figure(figsize=(6,6))
+    plt.scatter(y_true, y_pred, alpha=0.3, s=10)
+    lo = min(np.min(y_true), np.min(y_pred))
+    hi = max(np.max(y_true), np.max(y_pred))
+
+    plt.plot([lo, hi], [lo, hi], linewidth=1)
+    plt.xlabel("Actual MedHouseVal")
+    plt.ylabel("Predicted MedHouseVal")
+    plt.title(title)
+    plt.tight_layout()
+    plt.savefig(output_path)
+    plt.close()
+
 def main():
     X, y = load_data()
     X_train, X_test, y_train, y_test = split_data(X, y)
@@ -42,5 +57,8 @@ def main():
     print("Test target:", y_test.shape)
     print("Model training complete.")
     print("Best validation score:", round(mlp.best_validation_score_, 3))
+
+    y_pred_train = mlp.predict(X_train_scaled)
+    save_actual_vs_predicted_plot(y_train, y_pred_train, "Predicted vs Actual - Train", "figures/train_actual_vs_pred.png")
 
 main()
